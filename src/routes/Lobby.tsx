@@ -4,7 +4,7 @@ import { AppContext, TAppContext } from '../context/AppContext';
 
 export default function Lobby() {
     const navigate = useNavigate();
-    const { id } = useContext(AppContext) as TAppContext;
+    const { id, setIsHost } = useContext(AppContext) as TAppContext;
     useEffect(() => {
         if (id === '') {
             navigate('/');
@@ -15,7 +15,7 @@ export default function Lobby() {
         <div className="popup find-server-popup">
             <span className="inline">
                 <h1 className="title">Lobby</h1>
-                <Link to={'/find'}>Leave Server</Link>
+                <Link to={'/find'} onClick={() => setIsHost(false)}>Leave Server</Link>
             </span>
             <div className="server-view-wrapper">
                 <div className="server-view-row">

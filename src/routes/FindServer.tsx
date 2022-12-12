@@ -5,7 +5,7 @@ import { AppContext, TAppContext } from "../context/AppContext";
 export default function FindServer() {
     const [servers, setServers] = useState<{ id: string, username: string }[]>([]);
     const navigate = useNavigate();
-    const { id } = useContext(AppContext) as TAppContext;
+    const { id, setIsHost } = useContext(AppContext) as TAppContext;
     useEffect(() => {
         if (id === '') {
             navigate('/');
@@ -33,7 +33,7 @@ export default function FindServer() {
         <div className="popup find-server-popup">
             <span className="inline">
                 <h1 className="title">Find Server</h1>
-                <Link to={'/host'}>Host Server</Link>
+                <Link onClick={() => setIsHost(false)} to={'/host'}>Host Server</Link>
             </span>
             <div className="server-view-wrapper">
                 <div className="server-view-row">

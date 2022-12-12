@@ -14,7 +14,9 @@ export default function HostServer() {
         <div className="popup find-server-popup">
             <span className="inline">
                 <h1 className="title">Host Server</h1>
-                <Link to={'/find'}>Find Server</Link>
+                <Link onClick={() => {
+                    setIsHost(false);
+                }} to={'/find'}>Find Server</Link>
             </span>
             <button 
                 onClick={() => {
