@@ -2,13 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AppContext, TAppContext } from "../context/AppContext";
 
-const tempData: { username: string; peerId: string; }[] = [
-    // {
-    //     username: 'Hello World',
-    //     peerId: 'gjuirsgyoheuighugjilkdhujiehuw'
-    // },
-]
-
 export default function FindServer() {
     const [servers, setServers] = useState<{ id: string, username: string }[]>([]);
     const navigate = useNavigate();
