@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AppContext, TAppContext } from "../context/AppContext";
 
@@ -10,6 +10,7 @@ const tempData: { username: string; peerId: string; }[] = [
 ]
 
 export default function FindServer() {
+    const [servers, setServers] = useState<{ id: string, username: string }[]>([]);
     const navigate = useNavigate();
     const { id } = useContext(AppContext) as TAppContext;
     useEffect(() => {
@@ -17,7 +18,24 @@ export default function FindServer() {
             navigate('/');
         }
     }, []);
-    
+
+    useEffect(() => {
+        const controller = new AbortController();
+        fetch(`${location.protocol}//${location.hostname}:4000/servers`, {
+            signal: controller.signal,
+            credentials: 'same-origin',
+            "headers": {
+                "Content-Type": "application/json"
+            }
+        })
+            .then(data => data.json())
+            .then(data => {
+                setServers(data);
+
+            });
+        return () => controller.abort();
+    }, [])
+
     return (
         <div className="popup find-server-popup">
             <span className="inline">
@@ -30,15 +48,15 @@ export default function FindServer() {
                     <span>Number of Players</span>
                 </div>
                 <div className="server-view">
-                    {tempData.map((val) => {
+                    {servers.map((val) => {
                         return (
-                            <div onClick={() => navigate(`/game-lobby/${val.peerId}`)} key={val.peerId} className="server-view-row server-view-item">
+                            <div onClick={() => navigate(`/game-lobby/${val.id}`)} key={val.id} className="server-view-row server-view-item">
                                 <span>{val.username}</span>
                                 <span>0</span>
                             </div>
                         );
                     })}
-                    {tempData.length === 0 && <div className="server-view-row">No listings found {':\'('}</div>}
+                    {servers.length === 0 && <div className="server-view-row">No listings found {':\'('}</div>}
                 </div>
             </div>
         </div>

@@ -4,7 +4,7 @@ import { AppContext, TAppContext } from "../context/AppContext";
 
 export default function HostServer() {
     const navigate = useNavigate();
-    const { id } = useContext(AppContext) as TAppContext;
+    const { id, setIsHost } = useContext(AppContext) as TAppContext;
     useEffect(() => {
         if (id === '') {
             navigate('/');
@@ -16,7 +16,13 @@ export default function HostServer() {
                 <h1 className="title">Host Server</h1>
                 <Link to={'/find'}>Find Server</Link>
             </span>
-            <button onClick={() => navigate(`/game-lobby/${'peerid'}`)} className="btn">Host</button>
+            <button 
+                onClick={() => {
+                    navigate(`/game-lobby/${id}`);
+                    setIsHost(true);
+                }} 
+                className="btn"
+            >Host</button>
         </div>
     );
 }
