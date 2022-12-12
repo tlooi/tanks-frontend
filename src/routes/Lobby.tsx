@@ -4,12 +4,18 @@ import { AppContext, TAppContext } from '../context/AppContext';
 
 export default function Lobby() {
     const navigate = useNavigate();
-    const { id, setIsHost } = useContext(AppContext) as TAppContext;
+    const { id, setIsHost, isHost } = useContext(AppContext) as TAppContext;
     useEffect(() => {
         if (id === '') {
             navigate('/');
         }
     }, []);
+
+    useEffect(() => {
+        if (isHost) {
+            // Initialize new game????
+        }
+    }, [isHost]);
 
     return (
         <div className="popup find-server-popup">
@@ -29,6 +35,7 @@ export default function Lobby() {
                     </div>
                 </div>
             </div>
+            {isHost && <button className="btn">Start</button>}
         </div>
     );
 }
