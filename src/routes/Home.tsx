@@ -1,7 +1,25 @@
+import { useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { AppContext, TAppContext } from "../context/AppContext";
 
 export default function Home() {
     const navigate = useNavigate();
+
+    const { createSelf } = useContext(AppContext) as TAppContext;
+    
+    const usernameRef = useRef<HTMLInputElement>(null);
+
+    function onClickFindServer() {
+        navigate('/find');
+        const username = usernameRef.current?.value || `Guest_${Math.random().toString(36).slice(4, 10)}`;
+        createSelf(username);
+    }
+
+    function onClickHostServer() {
+        navigate('/host');
+        const username = usernameRef.current?.value || `Guest_${Math.random().toString(36).slice(4, 10)}`;
+        createSelf(username);
+    }
 
     return (
         <div className="popup">
@@ -17,12 +35,12 @@ export default function Home() {
                     placeholder=" "
                     // disabled={id === '' || username !== ''}
                     // defaultValue={username}
-                    // ref={usernameRef}
+                    ref={usernameRef}
                 />
             </div>
             <div className="home-buttons">
-                <button className="btn" onClick={() => navigate('/find')}>Find Server</button>
-                <button className="btn" onClick={() => navigate('/host')}>Host Server</button>
+                <button className="btn" onClick={onClickFindServer}>Find Server</button>
+                <button className="btn" onClick={onClickHostServer}>Host Server</button>
             </div>
         </div>
     );

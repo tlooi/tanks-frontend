@@ -1,23 +1,40 @@
-import { useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { AppContext, TAppContext } from "../context/AppContext";
+
+interface IServerListing { id: string, username: string };
+
+function loadServers(controller: AbortController, setServers: (val: IServerListing[]) => void) {
+    fetch(`${location.protocol}//${location.hostname}:4000/servers`, {
+        signal: controller.signal,
+        credentials: 'same-origin',
+        "headers": {
+            "Content-Type": "application/json"
+        }
+    })
+        .then(data => data.json())
+        .then(data => {
+            console.log(data);
+
+            setServers(data);
+        });
+
+}
 
 export default function FindServer() {
     const navigate = useNavigate();
 
+    const { game } = useContext(AppContext) as TAppContext;
+    
+    const [servers, setServers] = useState<{ id: string, username: string }[]>([]);
+    
     useEffect(() => {
+        if (!game.getSelf()) {
+            navigate('/');
+            return;
+        }
         const controller = new AbortController();
-        fetch(`${location.protocol}//${location.hostname}:4000/servers`, {
-            signal: controller.signal,
-            credentials: 'same-origin',
-            "headers": {
-                "Content-Type": "application/json"
-            }
-        })
-            .then(data => data.json())
-            .then(data => {
-                console.log('FindServer', data);
-
-            });
+        loadServers(controller, setServers);
         return () => controller.abort();
     }, [])
 
@@ -33,7 +50,7 @@ export default function FindServer() {
                     <span>Number of Players</span>
                 </div>
                 <div className="server-view">
-                    {/* {servers.map((val) => {
+                    {servers.map((val) => {
                         return (
                             <div onClick={() => navigate(`/game-lobby/${val.id}`)} key={val.id} className="server-view-row server-view-item">
                                 <span>{val.username}</span>
@@ -41,7 +58,7 @@ export default function FindServer() {
                             </div>
                         );
                     })}
-                    {servers.length === 0 && <div className="server-view-row">No listings found {':\'('}</div>} */}
+                    {servers.length === 0 && <div className="server-view-row">No listings found {':\'('}</div>}
                 </div>
             </div>
         </div>

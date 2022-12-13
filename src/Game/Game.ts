@@ -24,18 +24,27 @@ export class Player {
 }
 
 export default class Game {
-    private players: Player[];
-    private self: Player;
+    private players: Player[] = [];
+    private self: Player | undefined = undefined;
+    public isHost: boolean = false;
     public update = () => this.players.forEach(player => player.update());
     public getPlayers = () => this.players;
 
-    constructor(self: Player) {
-        this.players = [self];
-        this.self = self;
+    constructor() {
+    }
+
+    setup() {
+        
     }
 
     public addPlayer(id: string, username: string) {
         this.players.push(new Player(username, id, { x: 0, y: 0 }));
+    }
+
+    public addSelf(id: string, username: string) {
+        const self = new Player(username, id, { x: 0, y: 0 })
+        this.players.push(self);
+        this.self = self;
     }
 
     public removePlayer(id: string) {
@@ -47,4 +56,14 @@ export default class Game {
         }
     }
 
+    public setIsHost(val: boolean) {
+        this.isHost = val;
+    }
+
+    public getSelf(): Player | undefined {
+        if (this.self) {
+            return this.self;
+        }
+        return undefined;
+    }
 }
