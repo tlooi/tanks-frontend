@@ -1,3 +1,6 @@
+import { DataConnection } from "peerjs";
+import AppContextProvider from "../context/AppContext";
+
 type Vec2 = {
     x: number;
     y: number;
@@ -8,14 +11,20 @@ export class Player {
     private velocity: Vec2 = { x: 0, y: 0 };
     private username: string;
     private id: string;
+    private connection?: DataConnection;
 
     public getUsername = () => this.username;
     public getId = () => this.id;
 
-    constructor(username: string, id: string, position: Vec2) {
+    constructor(username: string, id: string, position: Vec2, connection?: DataConnection) {
         this.position = position;
         this.username = username;
         this.id = id;
+        this.connection = connection;
+    }
+
+    public getConnection() {
+        return this.connection;
     }
 
     public update() {
@@ -37,19 +46,33 @@ export default class Game {
         
     }
 
-    public addPlayer(id: string, username: string) {
-        this.players.push(new Player(username, id, { x: 0, y: 0 }));
+    endGame() {
+        this.setIsHost(false);
+        this.players.forEach(player => {
+            if (player.getConnection()) {
+                player.getConnection()!.close();
+            }
+        })
+        this.players = [];
+    }
+
+    resetPlayers() {
+        this.players = [];
+    }
+
+    public addPlayer(player: Player) {
+        this.players.push(player);
     }
 
     public addSelf(id: string, username: string) {
         const self = new Player(username, id, { x: 0, y: 0 })
-        this.players.push(self);
+        // this.players.push(self);
         this.self = self;
     }
 
-    public removePlayer(id: string) {
+    public removePlayer(player: Player) {
         for (let i = 0; i < this.players.length; i++) {
-            if (this.players[i].getId() === id) {
+            if (this.players[i] === player) {
                 this.players.splice(i, 1);
                 return;
             }

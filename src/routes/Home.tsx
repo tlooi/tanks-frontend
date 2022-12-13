@@ -6,19 +6,21 @@ export default function Home() {
     const navigate = useNavigate();
 
     const { createSelf } = useContext(AppContext) as TAppContext;
-    
+
     const usernameRef = useRef<HTMLInputElement>(null);
 
     function onClickFindServer() {
         navigate('/find');
         const username = usernameRef.current?.value || `Guest_${Math.random().toString(36).slice(4, 10)}`;
         createSelf(username);
+        console.log(username);
     }
 
     function onClickHostServer() {
         navigate('/host');
         const username = usernameRef.current?.value || `Guest_${Math.random().toString(36).slice(4, 10)}`;
         createSelf(username);
+        console.log(username);
     }
 
     return (

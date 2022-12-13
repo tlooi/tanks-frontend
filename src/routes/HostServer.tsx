@@ -5,7 +5,7 @@ import { AppContext, TAppContext } from "../context/AppContext";
 export default function HostServer() {
     const navigate = useNavigate();
 
-    const { game, setIsHost } = useContext(AppContext) as TAppContext;
+    const { game, hostGame } = useContext(AppContext) as TAppContext;
     
     useEffect(() => {
         if (!game.getSelf()) {
@@ -17,7 +17,7 @@ export default function HostServer() {
     function onClickHost() {
         if (game.getSelf()) {
             navigate(`/game-lobby/${game.getSelf()!.getId()}`);
-            setIsHost(true);
+            hostGame();
             console.log('HOST');
             
         }

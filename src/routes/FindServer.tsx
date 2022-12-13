@@ -14,9 +14,10 @@ function loadServers(controller: AbortController, setServers: (val: IServerListi
     })
         .then(data => data.json())
         .then(data => {
-            console.log(data);
-
             setServers(data);
+            setTimeout(() => {
+                loadServers(controller, setServers);
+            }, 100);
         });
 
 }
@@ -24,10 +25,10 @@ function loadServers(controller: AbortController, setServers: (val: IServerListi
 export default function FindServer() {
     const navigate = useNavigate();
 
-    const { game } = useContext(AppContext) as TAppContext;
-    
+    const { game, createConnection } = useContext(AppContext) as TAppContext;
+
     const [servers, setServers] = useState<{ id: string, username: string }[]>([]);
-    
+
     useEffect(() => {
         if (!game.getSelf()) {
             navigate('/');
@@ -36,7 +37,12 @@ export default function FindServer() {
         const controller = new AbortController();
         loadServers(controller, setServers);
         return () => controller.abort();
-    }, [])
+    }, []);
+
+    function onClickServer(id: string) {
+        navigate(`/game-lobby/${id}`);
+        createConnection(id);
+    }
 
     return (
         <div className="popup find-server-popup">
@@ -52,7 +58,7 @@ export default function FindServer() {
                 <div className="server-view">
                     {servers.map((val) => {
                         return (
-                            <div onClick={() => navigate(`/game-lobby/${val.id}`)} key={val.id} className="server-view-row server-view-item">
+                            <div onClick={() => onClickServer(val.id)} key={val.id} className="server-view-row server-view-item">
                                 <span>{val.username}</span>
                                 <span>0</span>
                             </div>

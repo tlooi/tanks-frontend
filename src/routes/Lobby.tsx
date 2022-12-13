@@ -2,12 +2,22 @@ import { useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AppContext, TAppContext } from '../context/AppContext';
 
-const players: {[key: string]: any}[] = [];
+// const players: {[key: string]: any}[] = [];
 
 export default function Lobby() {
     const navigate = useNavigate();
 
-    const { game, setIsHost } = useContext(AppContext) as TAppContext;
+    const { game, setIsHost, disconnectServer, refreshVal, connection: { dataConnection } } = useContext(AppContext) as TAppContext;
+    
+    useEffect(() => {
+        if (!game.isHost && !dataConnection) {
+            navigate('/find');
+            console.log('Kicked', game.getPlayers());
+            
+        } else {
+        }
+    }, [refreshVal]);
+
     
     useEffect(() => {
         if (!game.getSelf()) {
@@ -16,8 +26,11 @@ export default function Lobby() {
         }
     }, []);
 
+    const players = game.getPlayers();
+
     function onClickLeaveServer() {
-        setIsHost(false);
+        // setIsHost(false);
+        disconnectServer();
     }
 
     return (
